@@ -1,0 +1,18 @@
+{
+	"expo": {
+		"name": "Light Template",
+		"slug": "light-template",
+		"version": "1.0.0",
+		"orientation": "portrait",
+		"scheme": "light-template",
+		"newArchEnabled": true,
+		"android": {
+			"backgroundColor": "#000000",
+			"package": "com.twilightos.lighttemplate"
+		},
+		"plugins": ["expo-router"],
+		"experiments": {
+			"typedRoutes": true
+		}
+	}
+}
