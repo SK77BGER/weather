@@ -14,14 +14,14 @@ export function getWeatherDescription(weatherCode: number): string {
 		}
 	}
 	if (weatherCode === 45 || weatherCode === 48) {
-		return "Fog"; // Simplified from "Fog and depositing rime fog"
+		return "Fog";
 	}
 	if (weatherCode >= 51 && weatherCode <= 55) {
 		if (weatherCode === 51) {
 			return "Light drizzle";
 		}
 		if (weatherCode === 53) {
-			return "Moderate drizzle";
+			return "Drizzle";
 		}
 		if (weatherCode === 55) {
 			return "Dense drizzle";
@@ -37,10 +37,10 @@ export function getWeatherDescription(weatherCode: number): string {
 	}
 	if (weatherCode >= 61 && weatherCode <= 65) {
 		if (weatherCode === 61) {
-			return "Slight rain";
+			return "Light rain";
 		}
 		if (weatherCode === 63) {
-			return "Moderate rain";
+			return "Rain";
 		}
 		if (weatherCode === 65) {
 			return "Heavy rain";
@@ -56,10 +56,10 @@ export function getWeatherDescription(weatherCode: number): string {
 	}
 	if (weatherCode >= 71 && weatherCode <= 75) {
 		if (weatherCode === 71) {
-			return "Slight snow fall";
+			return "Light snow fall";
 		}
 		if (weatherCode === 73) {
-			return "Moderate snow fall";
+			return "Snow fall";
 		}
 		if (weatherCode === 75) {
 			return "Heavy snow fall";
@@ -70,10 +70,10 @@ export function getWeatherDescription(weatherCode: number): string {
 	}
 	if (weatherCode >= 80 && weatherCode <= 82) {
 		if (weatherCode === 80) {
-			return "Slight rain showers";
+			return "Light rain showers";
 		}
 		if (weatherCode === 81) {
-			return "Moderate rain showers";
+			return "Rain showers";
 		}
 		if (weatherCode === 82) {
 			return "Violent rain showers";
@@ -81,7 +81,7 @@ export function getWeatherDescription(weatherCode: number): string {
 	}
 	if (weatherCode === 85 || weatherCode === 86) {
 		if (weatherCode === 85) {
-			return "Slight snow showers";
+			return "Snow showers";
 		}
 		if (weatherCode === 86) {
 			return "Heavy snow showers";
@@ -92,11 +92,11 @@ export function getWeatherDescription(weatherCode: number): string {
 	}
 	if (weatherCode === 96 || weatherCode === 99) {
 		if (weatherCode === 96) {
-			return "Thunderstorm, slight hail";
+			return "Thunderstorm, hail";
 		}
 		if (weatherCode === 99) {
-			return "Thunderstorm, heavy hail";
+			return "Thunderstorm, hail";
 		}
 	}
-	return "Unknown weather"; // Fallback
+	return "Unknown weather";
 }
