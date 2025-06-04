@@ -15,6 +15,7 @@ import { useInvertColors } from "@/contexts/InvertColorsContext";
 import CustomScrollView from "@/components/CustomScrollView";
 import { MaterialIcons } from "@expo/vector-icons";
 import * as Haptics from "expo-haptics";
+import { HapticPressable } from "@/components/HapticPressable";
 
 export default function SearchScreen() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -90,7 +91,7 @@ export default function SearchScreen() {
 					}}
 				/>
 				{searchQuery.length > 0 && (
-					<TouchableOpacity
+					<HapticPressable
 						style={styles.clearButton}
 						onPress={() => {
 							setSearchQuery("");
@@ -104,7 +105,7 @@ export default function SearchScreen() {
 							size={24}
 							color={invertColors ? "black" : "white"}
 						/>
-					</TouchableOpacity>
+					</HapticPressable>
 				)}
 			</View>
 			{savedLocations.length > 0 && (

@@ -8,6 +8,7 @@ import {
 	NativeSyntheticEvent,
 	NativeScrollEvent,
 } from "react-native";
+import { useInvertColors } from "@/contexts/InvertColorsContext";
 
 interface CustomScrollViewProps extends ScrollViewProps {
 	// We can add any custom props here if needed in the future
@@ -19,6 +20,7 @@ const CustomScrollView: React.FC<PropsWithChildren<CustomScrollViewProps>> = ({
 	contentContainerStyle,
 	...rest
 }) => {
+	const { invertColors } = useInvertColors();
 	const [contentHeight, setContentHeight] = useState<number>(0);
 	const [scrollViewHeight, setScrollViewHeight] = useState<number>(0);
 	const scrollY = useRef(new Animated.Value(0)).current;
@@ -85,11 +87,17 @@ const CustomScrollView: React.FC<PropsWithChildren<CustomScrollViewProps>> = ({
 					style={[
 						styles.scrollIndicatorTrack,
 						{ transform: [{ translateX: 1 }] },
+						{ backgroundColor: invertColors ? "black" : "white" },
 					]}
 				>
 					<Animated.View
 						style={[
 							styles.scrollIndicatorThumb,
+							{
+								backgroundColor: invertColors
+									? "black"
+									: "white",
+							},
 							{
 								height: scrollIndicatorHeight,
 								transform: [
@@ -116,13 +124,11 @@ const styles = StyleSheet.create({
 	scrollIndicatorTrack: {
 		width: 1,
 		height: "100%",
-		backgroundColor: "white",
 		position: "absolute",
 		right: -18,
 	},
 	scrollIndicatorThumb: {
 		width: 5,
-		backgroundColor: "white",
 		position: "absolute",
 		right: -2,
 	},
