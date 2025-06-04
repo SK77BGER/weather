@@ -41,7 +41,7 @@ const styles = StyleSheet.create({
 		fontSize: 20,
 		paddingTop: 7.5,
 		lineHeight: 20,
-		fontFamily: "PublicSans-Bold",
+		fontFamily: "PublicSans-Regular",
 	},
 	buttonText: {
 		fontSize: 30,

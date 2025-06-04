@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
 	},
 	savedLocationsTitle: {
 		fontSize: 20,
-		fontFamily: "PublicSans-Bold",
+		fontFamily: "PublicSans-Regular",
 		marginBottom: 4,
 	},
 });
