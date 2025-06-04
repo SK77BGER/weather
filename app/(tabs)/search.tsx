@@ -1,11 +1,20 @@
 import { router, useFocusEffect } from "expo-router";
 import { useCallback, useState } from "react";
-import { TextInput, StyleSheet, View, Text, ScrollView } from "react-native";
+import {
+	TextInput,
+	StyleSheet,
+	View,
+	Text,
+	ScrollView,
+	TouchableOpacity,
+} from "react-native";
 import ContentContainer from "@/components/ContentContainer";
 import { SavedLocation, getSavedLocations } from "@/utils/savedLocations";
 import { StyledButton } from "@/components/StyledButton";
 import { useInvertColors } from "@/contexts/InvertColorsContext";
 import CustomScrollView from "@/components/CustomScrollView";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as Haptics from "expo-haptics";
 
 export default function SearchScreen() {
 	const [searchQuery, setSearchQuery] = useState("");
@@ -53,28 +62,51 @@ export default function SearchScreen() {
 			}}
 			style={{ gap: 32 }}
 		>
-			<TextInput
+			<View
 				style={[
-					styles.input,
-					{ color: invertColors ? "black" : "white" },
+					styles.inputContainer,
 					{ borderBottomColor: invertColors ? "black" : "white" },
 				]}
-				placeholderTextColor="#888"
-				value={searchQuery}
-				placeholder="Search for a location"
-				onChangeText={setSearchQuery}
-				cursorColor="white"
-				selectionColor="white"
-				onSubmitEditing={() => {
-					if (searchQuery.length > 0) {
-						router.push(
-							`/search/search-results?query=${encodeURIComponent(
-								searchQuery
-							)}` as any
-						);
-					}
-				}}
-			/>
+			>
+				<TextInput
+					style={[
+						styles.input,
+						{ color: invertColors ? "black" : "white" },
+					]}
+					placeholderTextColor="#888"
+					value={searchQuery}
+					placeholder="Search for a location"
+					onChangeText={setSearchQuery}
+					cursorColor={invertColors ? "black" : "white"}
+					selectionColor={invertColors ? "black" : "white"}
+					onSubmitEditing={() => {
+						if (searchQuery.length > 0) {
+							router.push(
+								`/search/search-results?query=${encodeURIComponent(
+									searchQuery
+								)}` as any
+							);
+						}
+					}}
+				/>
+				{searchQuery.length > 0 && (
+					<TouchableOpacity
+						style={styles.clearButton}
+						onPress={() => {
+							setSearchQuery("");
+							Haptics.impactAsync(
+								Haptics.ImpactFeedbackStyle.Medium
+							);
+						}}
+					>
+						<MaterialIcons
+							name="clear"
+							size={24}
+							color={invertColors ? "black" : "white"}
+						/>
+					</TouchableOpacity>
+				)}
+			</View>
 			{savedLocations.length > 0 && (
 				<View style={styles.savedLocationsContainer}>
 					<Text
@@ -112,13 +144,22 @@ export default function SearchScreen() {
 }
 
 const styles = StyleSheet.create({
-	input: {
+	inputContainer: {
+		flexDirection: "row",
+		alignItems: "center",
 		width: "100%",
 		borderBottomWidth: 1,
+	},
+	input: {
+		flex: 1,
 		fontSize: 24,
 		fontFamily: "PublicSans-Regular",
 		paddingVertical: 2,
 		textAlign: "left",
+		paddingBottom: 6,
+	},
+	clearButton: {
+		padding: 5,
 	},
 	savedLocationsContainer: {
 		flex: 1,
