@@ -52,7 +52,9 @@ export default function LocationWeatherScreen() {
 
 		let displayName = name;
 		if (admin1 && country) {
-			displayName = `${name}, ${admin1}, ${country}`;
+			displayName = `${name}${
+				admin1 && admin1 !== name ? `, ${admin1}` : ""
+			}, ${country}`;
 		} else if (admin1 && !country) {
 			displayName = `${name}, ${admin1}`;
 		} else if (country) {

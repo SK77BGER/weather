@@ -97,7 +97,8 @@ export default function SearchResultsScreen() {
 						<View key={location.id} style={{ marginBottom: 16 }}>
 							<StyledButton
 								text={`${location.name}${
-									location.admin1
+									location.admin1 &&
+									location.admin1 !== location.name
 										? `, ${location.admin1}`
 										: ""
 								}, ${location.country}`}

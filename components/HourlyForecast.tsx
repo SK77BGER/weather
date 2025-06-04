@@ -109,7 +109,7 @@ export default function HourlyForecast({
 	const units = useUnits();
 	return (
 		<View style={{ paddingTop: 16 }}>
-			<StyledText style={{ fontSize: 20, paddingBottom: 4 }}>
+			<StyledText style={{ fontSize: 19, paddingBottom: 4 }}>
 				Hourly Forecast
 			</StyledText>
 			{hourlyData?.time.map((_, index) => {
@@ -141,7 +141,7 @@ export default function HourlyForecast({
 								fill={invertColors ? "black" : "white"}
 							/>
 							<StyledText
-								style={{ fontSize: 20, paddingLeft: 8 }}
+								style={{ fontSize: 19, paddingLeft: 8 }}
 							>
 								{eventDate.toLocaleTimeString([], {
 									hour: "2-digit",
@@ -175,7 +175,7 @@ export default function HourlyForecast({
 							height={32}
 							fill={invertColors ? "black" : "white"}
 						/>
-						<StyledText style={{ fontSize: 20, paddingLeft: 8 }}>
+						<StyledText style={{ fontSize: 19, paddingLeft: 8 }}>
 							{new Date(
 								hourlyData.time[index]
 							).toLocaleTimeString([], {

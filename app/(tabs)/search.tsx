@@ -125,11 +125,12 @@ export default function SearchScreen() {
 								style={{ marginBottom: 15 }}
 							>
 								<StyledButton
-									text={`${location.name}, ${
-										location.admin1
-											? `${location.admin1}, `
+									text={`${location.name}${
+										location.admin1 &&
+										location.admin1 !== location.name
+											? `, ${location.admin1}`
 											: ""
-									}${location.country}`}
+									}, ${location.country}`}
 									onPress={() =>
 										handlePressSavedLocation(location)
 									}

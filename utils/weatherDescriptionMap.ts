@@ -88,7 +88,7 @@ export function getWeatherDescription(weatherCode: number): string {
 		}
 	}
 	if (weatherCode === 95) {
-		return "Thunderstorm"; // Simplified
+		return "Thunderstorm";
 	}
 	if (weatherCode === 96 || weatherCode === 99) {
 		if (weatherCode === 96) {
