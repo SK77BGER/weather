@@ -1,9 +1,14 @@
 import React, { useEffect } from "react";
 import { Stack } from "expo-router";
 import { HapticProvider } from "../contexts/HapticContext";
-import { InvertColorsProvider } from "../contexts/InvertColorsContext";
+import {
+	InvertColorsProvider,
+	useInvertColors,
+} from "../contexts/InvertColorsContext";
+import { UnitsProvider } from "../contexts/UnitsContext";
 import { useFonts } from "expo-font";
 import { setStatusBarHidden } from "expo-status-bar";
+import * as SystemUI from "expo-system-ui";
 
 function RootNavigation() {
 	useFonts({
@@ -13,6 +18,13 @@ function RootNavigation() {
 	useEffect(() => {
 		setStatusBarHidden(true, "none");
 	}, []);
+
+	const { invertColors } = useInvertColors();
+
+	useEffect(() => {
+		const newColor = invertColors ? "#FFFFFF" : "#000000";
+		SystemUI.setBackgroundColorAsync(newColor);
+	}, [invertColors]);
 
 	return (
 		<Stack
@@ -28,7 +40,9 @@ export default function RootLayout() {
 	return (
 		<HapticProvider>
 			<InvertColorsProvider>
-				<RootNavigation />
+				<UnitsProvider>
+					<RootNavigation />
+				</UnitsProvider>
 			</InvertColorsProvider>
 		</HapticProvider>
 	);

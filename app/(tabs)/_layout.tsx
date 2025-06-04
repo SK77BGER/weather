@@ -1,28 +1,24 @@
-import React, { useMemo } from "react";
+import React from "react";
 import { Tabs } from "expo-router";
 import { Navbar, TabConfigItem } from "@/components/Navbar";
-import { TabHeader } from "@/components/TabHeader";
 
 export const TABS_CONFIG: ReadonlyArray<TabConfigItem> = [
-	{ name: "Home", screenName: "index", iconName: "home" },
+	{
+		name: "Current Location",
+		screenName: "current-location",
+		iconName: "location-pin",
+	},
+	{ name: "Search", screenName: "search", iconName: "search" },
 	{ name: "Settings", screenName: "settings", iconName: "settings" },
 ] as const;
 
 export default function TabLayout() {
 	return (
 		<Tabs
-			screenOptions={({ route }) => ({
-				header: () => {
-					const currentTab = TABS_CONFIG.find(
-						(t) => t.screenName === route.name
-					);
-					return (
-						<TabHeader
-							headerTitle={currentTab ? currentTab.name : " "}
-						/>
-					);
-				},
+			initialRouteName="current-location"
+			screenOptions={() => ({
 				animation: "none",
+				headerShown: false,
 			})}
 			tabBar={(props) => {
 				const activeScreenName =

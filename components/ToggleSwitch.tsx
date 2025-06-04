@@ -74,8 +74,6 @@ export function ToggleSwitch({
 	onValueChange,
 	color = "white",
 }: ToggleSwitchProps) {
-	const { invertColors } = useInvertColors();
-
 	return (
 		<HapticPressable
 			onPress={() => {
@@ -87,14 +85,7 @@ export function ToggleSwitch({
 				<ToggleSwitchGraphic value={value} color={color} />
 			</View>
 			<View style={styles.textTouchable}>
-				<StyledText
-					style={[
-						styles.label,
-						{ color: invertColors ? "black" : "white" },
-					]}
-				>
-					{label}
-				</StyledText>
+				<StyledText style={[styles.label]}>{label}</StyledText>
 			</View>
 		</HapticPressable>
 	);
@@ -104,7 +95,7 @@ const styles = StyleSheet.create({
 	container: {
 		flexDirection: "row",
 		alignItems: "center",
-		paddingTop: 7,
+		paddingTop: 9,
 	},
 	switchTouchable: {
 		marginTop: 12,

@@ -49,14 +49,7 @@ export function TabHeader({
 			) : (
 				<View style={{ width: 32, height: 32 }} />
 			)}
-			<StyledText
-				style={[
-					styles.title,
-					{ color: invertColors ? "black" : "white" },
-				]}
-			>
-				{headerTitle}
-			</StyledText>
+			<StyledText style={[styles.title]}>{headerTitle}</StyledText>
 			{rightIconName ? (
 				<HapticPressable onPress={rightOnIconPress}>
 					<View
@@ -86,12 +79,11 @@ const styles = StyleSheet.create({
 		alignItems: "center",
 		justifyContent: "space-between",
 		paddingHorizontal: 22,
-		paddingVertical: 10,
+		paddingVertical: 5,
 		zIndex: 1,
 	},
 	title: {
 		fontSize: 20,
 		fontFamily: "PublicSans-Regular",
-		paddingBottom: 10,
 	},
 });
