@@ -9,6 +9,7 @@ import { UnitsProvider } from "../contexts/UnitsContext";
 import { useFonts } from "expo-font";
 import { setStatusBarHidden } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 function RootNavigation() {
 	useFonts({
@@ -38,12 +39,14 @@ function RootNavigation() {
 
 export default function RootLayout() {
 	return (
-		<HapticProvider>
-			<InvertColorsProvider>
-				<UnitsProvider>
-					<RootNavigation />
-				</UnitsProvider>
-			</InvertColorsProvider>
-		</HapticProvider>
+		<SafeAreaProvider>
+			<HapticProvider>
+				<InvertColorsProvider>
+					<UnitsProvider>
+						<RootNavigation />
+					</UnitsProvider>
+				</InvertColorsProvider>
+			</HapticProvider>
+		</SafeAreaProvider>
 	);
 }
