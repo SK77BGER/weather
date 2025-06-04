@@ -63,7 +63,7 @@ export default function CurrentLocationScreen() {
 		}, [units])
 	);
 
-	return (
+	return weatherData ? (
 		<ContentContainer
 			headerTitle={currentLocation?.toString()}
 			hideBackButton={true}
@@ -97,5 +97,10 @@ export default function CurrentLocationScreen() {
 				/>
 			</CustomScrollView>
 		</ContentContainer>
+	) : (
+		<ContentContainer
+			headerTitle={currentLocation?.toString()}
+			hideBackButton={true}
+		></ContentContainer>
 	);
 }
