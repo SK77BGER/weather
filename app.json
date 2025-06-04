@@ -6,13 +6,18 @@
 		"orientation": "portrait",
 		"scheme": "weather",
 		"newArchEnabled": true,
+		"icon": "./assets/images/icon.png",
 		"android": {
 			"package": "com.vandam.weather",
 			"edgeToEdgeEnabled": true,
 			"permissions": [
 				"android.permission.ACCESS_COARSE_LOCATION",
 				"android.permission.ACCESS_FINE_LOCATION"
-			]
+			],
+			"adaptiveIcon": {
+				"foregroundImage": "./assets/images/icon.png",
+				"backgroundColor": "#000000"
+			}
 		},
 		"ios": {
 			"infoPlist": {
