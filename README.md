@@ -6,6 +6,8 @@ An app for the Light Phone III to check the weather.
 
 Weather API: [Open-meteo](https://open-meteo.com/)
 
+Weather Icons: [erikflowers/weather-icons](https://github.com/erikflowers/weather-icons)
+
 Font: [Public Sans](https://public-sans.digital.gov/)
 
 ## Building
