@@ -1,9 +1,9 @@
 import React from "react";
 import ContentContainer from "@/components/ContentContainer";
 import { useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { getWeatherData, WeatherData } from "@/utils/weather";
-import { Text, StyleSheet, View } from "react-native";
+import { Text, StyleSheet, View, AppState, AppStateStatus } from "react-native";
 import CurrentSummary from "@/components/CurrentSummary";
 import HourlyForecast from "@/components/HourlyForecast";
 import WeeklyForecast from "@/components/WeeklyForecast";
@@ -41,10 +41,40 @@ export default function LocationWeatherScreen() {
 	const [currentLocationId, setCurrentLocationId] = useState<number | null>(
 		null
 	);
+	const appState = useRef(AppState.currentState);
 
-	useEffect(() => {
+	const fetchWeather = useCallback(async () => {
 		const latStr = params.latitude;
 		const lonStr = params.longitude;
+		const lat = parseFloat(latStr ?? "0");
+		const lon = parseFloat(lonStr ?? "0");
+
+		if (lat && lon) {
+			setErrorMsg(null);
+			try {
+				const data = await getWeatherData(
+					lat,
+					lon,
+					units.temperatureUnit,
+					units.windSpeedUnit,
+					units.precipitationUnit
+				);
+				setWeatherData(data);
+				if (!data) {
+					setErrorMsg(
+						"Could not fetch weather data for this location."
+					);
+				}
+			} catch (error) {
+				setErrorMsg("Error fetching weather data");
+				console.error("Error fetching weather data:", error);
+			}
+		} else {
+			setErrorMsg("Invalid location coordinates provided.");
+		}
+	}, [params.latitude, params.longitude, units]);
+
+	useEffect(() => {
 		const name = params.name ?? "Selected Location";
 		const admin1 = params.admin1;
 		const country = params.country;
@@ -62,8 +92,6 @@ export default function LocationWeatherScreen() {
 		}
 		setLocationName(displayName);
 
-		const lat = parseFloat(latStr ?? "0");
-		const lon = parseFloat(lonStr ?? "0");
 		const id = idStr ? parseInt(idStr, 10) : null;
 		setCurrentLocationId(id);
 
@@ -74,41 +102,30 @@ export default function LocationWeatherScreen() {
 			};
 			checkSaved();
 		}
+	}, [params.name, params.admin1, params.country, params.id]);
 
-		if (lat && lon) {
-			(async () => {
-				setErrorMsg(null);
-				try {
-					const data = await getWeatherData(
-						lat,
-						lon,
-						units.temperatureUnit,
-						units.windSpeedUnit,
-						units.precipitationUnit
-					);
-					setWeatherData(data);
-					if (!data) {
-						setErrorMsg(
-							"Could not fetch weather data for this location."
-						);
-					}
-				} catch (error) {
-					setErrorMsg("Error fetching weather data");
-					console.error("Error fetching weather data:", error);
+	useEffect(() => {
+		fetchWeather();
+	}, [fetchWeather]);
+
+	useEffect(() => {
+		const subscription = AppState.addEventListener(
+			"change",
+			(nextAppState: AppStateStatus) => {
+				if (
+					appState.current.match(/inactive|background/) &&
+					nextAppState === "active"
+				) {
+					fetchWeather();
 				}
-			})();
-		} else {
-			setErrorMsg("Invalid location coordinates provided.");
-		}
-	}, [
-		params.latitude,
-		params.longitude,
-		params.name,
-		params.admin1,
-		params.country,
-		params.id,
-		units,
-	]);
+				appState.current = nextAppState;
+			}
+		);
+
+		return () => {
+			subscription.remove();
+		};
+	}, [fetchWeather]);
 
 	const toggleSaveLocation = async () => {
 		if (

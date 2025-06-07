@@ -1,9 +1,8 @@
 import ContentContainer from "@/components/ContentContainer";
 import { useFocusEffect } from "expo-router";
-import { useCallback, useState } from "react";
-// import * as Location from "expo-location";
+import { useCallback, useState, useEffect, useRef } from "react";
 import Geolocation from "react-native-geolocation-service";
-import { PermissionsAndroid } from "react-native";
+import { PermissionsAndroid, AppState, AppStateStatus } from "react-native";
 import { getWeatherData, WeatherData } from "@/utils/weather";
 import CurrentSummary from "@/components/CurrentSummary";
 import HourlyForecast from "@/components/HourlyForecast";
@@ -20,75 +19,92 @@ export default function CurrentLocationScreen() {
 	const [selectedWeatherVariable, setSelectedWeatherVariable] =
 		useState<string>("Temp");
 
+	const appState = useRef(AppState.currentState);
+
+	const fetchLocationAndWeather = useCallback(async () => {
+		const granted = await PermissionsAndroid.request(
+			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
+			{
+				title: "Location Permission",
+				message:
+					"This app needs access to your location to show current weather.",
+				buttonNeutral: "Ask Me Later",
+				buttonNegative: "Cancel",
+				buttonPositive: "OK",
+			}
+		);
+		if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+			setErrorMsg("Permission to access location was denied");
+			console.log("Location permission denied.");
+			return;
+		}
+
+		const getCurrentPositionPromise =
+			(): Promise<Geolocation.GeoPosition> => {
+				return new Promise((resolve, reject) => {
+					Geolocation.getCurrentPosition(
+						(position) => resolve(position),
+						(error) => reject(error),
+						{
+							enableHighAccuracy: true,
+							timeout: 15000,
+							maximumAge: 10000,
+						}
+					);
+				});
+			};
+
+		try {
+			const fetchedLocation = await getCurrentPositionPromise();
+
+			// Set a generic location name as reverse geocoding is removed
+			setCurrentLocation("Current Location");
+
+			const data = await getWeatherData(
+				fetchedLocation.coords.latitude,
+				fetchedLocation.coords.longitude,
+				units.temperatureUnit,
+				units.windSpeedUnit,
+				units.precipitationUnit
+			);
+			setWeatherData(data);
+			setErrorMsg(null); // Clear any previous errors
+		} catch (error: any) {
+			if (error.code && error.message) {
+				setErrorMsg(`Error (code ${error.code}): ${error.message}`);
+				console.error("Geolocation error:", error.code, error.message);
+			} else {
+				setErrorMsg("Error fetching location or weather");
+				console.error("Error in focus effect:", error);
+			}
+		}
+	}, [units]);
+
 	useFocusEffect(
 		useCallback(() => {
-			(async () => {
-				// Request Android permissions
-				const granted = await PermissionsAndroid.request(
-					PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-					{
-						title: "Location Permission",
-						message:
-							"This app needs access to your location to show current weather.",
-						buttonNeutral: "Ask Me Later",
-						buttonNegative: "Cancel",
-						buttonPositive: "OK",
-					}
-				);
-				if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
-					setErrorMsg("Permission to access location was denied");
-					console.log("Location permission denied.");
-					return;
-				}
-
-				const getCurrentPositionPromise =
-					(): Promise<Geolocation.GeoPosition> => {
-						return new Promise((resolve, reject) => {
-							Geolocation.getCurrentPosition(
-								(position) => resolve(position),
-								(error) => reject(error),
-								{
-									enableHighAccuracy: true,
-									timeout: 15000,
-									maximumAge: 10000,
-								}
-							);
-						});
-					};
-
-				try {
-					const fetchedLocation = await getCurrentPositionPromise();
-
-					// Set a generic location name as reverse geocoding is removed
-					setCurrentLocation("Current Location");
-
-					const data = await getWeatherData(
-						fetchedLocation.coords.latitude,
-						fetchedLocation.coords.longitude,
-						units.temperatureUnit,
-						units.windSpeedUnit,
-						units.precipitationUnit
-					);
-					setWeatherData(data);
-					setErrorMsg(null); // Clear any previous errors
-				} catch (error: any) {
-					if (error.code && error.message) {
-						setErrorMsg(
-							`Error (code ${error.code}): ${error.message}`
-						);
-						console.error(
-							"Geolocation error:",
-							error.code,
-							error.message
-						);
-					} else {
-						setErrorMsg("Error fetching location or weather");
-						console.error("Error in focus effect:", error);
-					}
-				}
-			})();
-		}, [units])
+			fetchLocationAndWeather();
+		}, [fetchLocationAndWeather])
 	);
+
+	useEffect(() => {
+		const subscription = AppState.addEventListener(
+			"change",
+			(nextAppState: AppStateStatus) => {
+				if (
+					appState.current.match(/inactive|background/) &&
+					nextAppState === "active"
+				) {
+					fetchLocationAndWeather();
+				}
+
+				appState.current = nextAppState;
+			}
+		);
+
+		return () => {
+			subscription.remove();
+		};
+	}, [fetchLocationAndWeather]);
 
 	return weatherData ? (
 		<ContentContainer
