@@ -13,6 +13,7 @@ export default function SearchResultsScreen() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { invertColors } = useInvertColors();
+    const iso311a2 = require('iso-3166-1-alpha-2');
 
 	useEffect(() => {
 		if (query) {
@@ -48,8 +49,8 @@ export default function SearchResultsScreen() {
 				latitude: location.latitude.toString(),
 				longitude: location.longitude.toString(),
 				name: location.name,
-				admin1: location.admin1 ?? "",
-				country: location.country,
+                admin1: location.admin1 ?? "",
+				country: iso311a2.getCountry(location.country_code),
 				id: location.id.toString(),
 			},
 		} as any);
@@ -101,7 +102,7 @@ export default function SearchResultsScreen() {
 									location.admin1 !== location.name
 										? `, ${location.admin1}`
 										: ""
-								}, ${location.country}`}
+								}, ${iso311a2.getCountry(location.country_code)}`}
 								onPress={() => handlePressLocation(location)}
 								fontSize={28}
 							/>
