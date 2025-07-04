@@ -22,6 +22,10 @@ export default function CurrentLocationScreen() {
 	const appState = useRef(AppState.currentState);
 
 	const fetchLocationAndWeather = useCallback(async () => {
+		if (!units.unitsLoaded) {
+			return;
+		}
+		
 		const granted = await PermissionsAndroid.request(
 			PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
 			{
@@ -78,7 +82,7 @@ export default function CurrentLocationScreen() {
 				console.error("Error in focus effect:", error);
 			}
 		}
-	}, [units]);
+	}, [units.temperatureUnit, units.windSpeedUnit, units.precipitationUnit, units.unitsLoaded]);
 
 	useFocusEffect(
 		useCallback(() => {

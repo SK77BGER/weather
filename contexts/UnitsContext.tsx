@@ -18,6 +18,7 @@ interface UnitsContextType {
 	setWindSpeedUnit: (unit: WindSpeedUnit) => void;
 	precipitationUnit: PrecipitationUnit;
 	setPrecipitationUnit: (unit: PrecipitationUnit) => void;
+	unitsLoaded: boolean;
 }
 
 const UnitsContext = createContext<UnitsContextType>({
@@ -27,6 +28,7 @@ const UnitsContext = createContext<UnitsContextType>({
 	setWindSpeedUnit: () => {},
 	precipitationUnit: "Millimeter",
 	setPrecipitationUnit: () => {},
+	unitsLoaded: false,
 });
 
 export const useUnits = () => useContext(UnitsContext);
@@ -38,23 +40,32 @@ export const UnitsProvider = ({ children }: { children: ReactNode }) => {
 		useState<WindSpeedUnit>("km/h");
 	const [precipitationUnit, setPrecipitationUnitState] =
 		useState<PrecipitationUnit>("Millimeter");
+	const [unitsLoaded, setUnitsLoaded] = useState(false);
 
 	useEffect(() => {
-		AsyncStorage.getItem("temperatureUnit").then((value) => {
-			if (value !== null) {
-				setTemperatureUnitState(value as TemperatureUnit);
+		const loadUnits = async () => {
+			try {
+				const [tempUnit, windUnit, precipUnit] = await Promise.all([
+					AsyncStorage.getItem("temperatureUnit"),
+					AsyncStorage.getItem("windSpeedUnit"),
+					AsyncStorage.getItem("precipitationUnit"),
+				]);
+
+				if (tempUnit !== null) {
+					setTemperatureUnitState(tempUnit as TemperatureUnit);
+				}
+				if (windUnit !== null) {
+					setWindSpeedUnitState(windUnit as WindSpeedUnit);
+				}
+				if (precipUnit !== null) {
+					setPrecipitationUnitState(precipUnit as PrecipitationUnit);
+				}
+			} finally {
+				setUnitsLoaded(true);
 			}
-		});
-		AsyncStorage.getItem("windSpeedUnit").then((value) => {
-			if (value !== null) {
-				setWindSpeedUnitState(value as WindSpeedUnit);
-			}
-		});
-		AsyncStorage.getItem("precipitationUnit").then((value) => {
-			if (value !== null) {
-				setPrecipitationUnitState(value as PrecipitationUnit);
-			}
-		});
+		};
+
+		loadUnits();
 	}, []);
 
 	const setTemperatureUnit = async (unit: TemperatureUnit) => {
@@ -81,6 +92,7 @@ export const UnitsProvider = ({ children }: { children: ReactNode }) => {
 				setWindSpeedUnit,
 				precipitationUnit,
 				setPrecipitationUnit,
+				unitsLoaded,
 			}}
 		>
 			{children}

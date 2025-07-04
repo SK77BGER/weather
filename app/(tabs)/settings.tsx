@@ -3,6 +3,8 @@ import { ToggleSwitch } from "@/components/ToggleSwitch";
 import { useInvertColors } from "@/contexts/InvertColorsContext";
 import { SelectorButton } from "@/components/SelectorButton";
 import { useUnits } from "@/contexts/UnitsContext";
+import { View, StyleSheet, Text } from "react-native";
+import * as Application from "expo-application";
 
 export default function SettingsScreen() {
 	const { invertColors, setInvertColors } = useInvertColors();
@@ -34,6 +36,26 @@ export default function SettingsScreen() {
 				label="Invert Colours"
 				onValueChange={setInvertColors}
 			/>
+
+            <View style={styles.versionContainer}>
+                <Text style={styles.versionText}>
+                    v{Application.nativeApplicationVersion}
+                </Text>
+            </View>
 		</ContentContainer>
 	);
 }
+
+const styles = StyleSheet.create({
+	versionContainer: {
+        width: "100%",
+		alignItems: "center",
+        justifyContent: "flex-end",
+        flex: 1,
+	},
+	versionText: {
+		color: "#666",
+		fontSize: 12,
+		fontWeight: "400",
+	},
+});

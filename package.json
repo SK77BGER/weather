@@ -1,12 +1,13 @@
 {
 	"name": "weather",
 	"main": "expo-router/entry",
-	"version": "1.0.2",
+	"version": "1.0.3",
 	"scripts": {
 		"start": "expo start",
 		"android": "expo run:android",
 		"ios": "expo run:ios",
-		"sync-android-version": "node scripts/sync-version.js"
+		"sync-android-version": "node scripts/sync-version.js",
+		"lint": "expo lint"
 	},
 	"dependencies": {
 		"@expo/vector-icons": "^14.1.0",
@@ -26,7 +27,8 @@
 		"react-native-safe-area-context": "5.4.0",
 		"react-native-screens": "~4.10.0",
 		"react-native-svg": "^15.12.0",
-		"react-native-svg-transformer": "^1.5.1"
+		"react-native-svg-transformer": "^1.5.1",
+		"expo-application": "~6.1.5"
 	},
 	"devDependencies": {
 		"@babel/core": "^7.25.2",

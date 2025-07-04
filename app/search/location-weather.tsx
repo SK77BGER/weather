@@ -44,6 +44,10 @@ export default function LocationWeatherScreen() {
 	const appState = useRef(AppState.currentState);
 
 	const fetchWeather = useCallback(async () => {
+		if (!units.unitsLoaded) {
+			return;
+		}
+		
 		const latStr = params.latitude;
 		const lonStr = params.longitude;
 		const lat = parseFloat(latStr ?? "0");
@@ -72,7 +76,7 @@ export default function LocationWeatherScreen() {
 		} else {
 			setErrorMsg("Invalid location coordinates provided.");
 		}
-	}, [params.latitude, params.longitude, units]);
+	}, [params.latitude, params.longitude, units.temperatureUnit, units.windSpeedUnit, units.precipitationUnit, units.unitsLoaded]);
 
 	useEffect(() => {
 		const name = params.name ?? "Selected Location";
