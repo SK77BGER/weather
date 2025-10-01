@@ -6,6 +6,7 @@ import {
 	useInvertColors,
 } from "../contexts/InvertColorsContext";
 import { UnitsProvider } from "../contexts/UnitsContext";
+import { CurrentLocationProvider } from "../contexts/CurrentLocationContext";
 import { useFonts } from "expo-font";
 import { setStatusBarHidden } from "expo-status-bar";
 import * as SystemUI from "expo-system-ui";
@@ -32,6 +33,7 @@ function RootNavigation() {
 			screenOptions={{
 				headerShown: false,
 				animation: "none",
+				contentStyle: { backgroundColor: "#000000" },
 			}}
 		></Stack>
 	);
@@ -43,7 +45,9 @@ export default function RootLayout() {
 			<HapticProvider>
 				<InvertColorsProvider>
 					<UnitsProvider>
-						<RootNavigation />
+						<CurrentLocationProvider>
+							<RootNavigation />
+						</CurrentLocationProvider>
 					</UnitsProvider>
 				</InvertColorsProvider>
 			</HapticProvider>

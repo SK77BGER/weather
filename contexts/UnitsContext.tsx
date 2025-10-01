@@ -4,6 +4,7 @@ import React, {
 	useState,
 	useEffect,
 	ReactNode,
+	useMemo,
 } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -83,18 +84,21 @@ export const UnitsProvider = ({ children }: { children: ReactNode }) => {
 		await AsyncStorage.setItem("precipitationUnit", unit);
 	};
 
+	const value = useMemo(
+		() => ({
+			temperatureUnit,
+			setTemperatureUnit,
+			windSpeedUnit,
+			setWindSpeedUnit,
+			precipitationUnit,
+			setPrecipitationUnit,
+			unitsLoaded,
+		}),
+		[temperatureUnit, windSpeedUnit, precipitationUnit, unitsLoaded]
+	);
+
 	return (
-		<UnitsContext.Provider
-			value={{
-				temperatureUnit,
-				setTemperatureUnit,
-				windSpeedUnit,
-				setWindSpeedUnit,
-				precipitationUnit,
-				setPrecipitationUnit,
-				unitsLoaded,
-			}}
-		>
+		<UnitsContext.Provider value={value}>
 			{children}
 		</UnitsContext.Provider>
 	);

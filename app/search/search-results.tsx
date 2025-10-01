@@ -6,6 +6,7 @@ import { StyledButton } from "@/components/StyledButton";
 import { GeocodingResult, searchLocations } from "@/utils/geocoding";
 import { useInvertColors } from "@/contexts/InvertColorsContext";
 import CustomScrollView from "@/components/CustomScrollView";
+import iso311a2 from "iso-3166-1-alpha-2";
 
 export default function SearchResultsScreen() {
 	const { query } = useLocalSearchParams<{ query?: string }>();
@@ -13,7 +14,6 @@ export default function SearchResultsScreen() {
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState<string | null>(null);
 	const { invertColors } = useInvertColors();
-    const iso311a2 = require('iso-3166-1-alpha-2');
 
 	useEffect(() => {
 		if (query) {
