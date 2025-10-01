@@ -104,7 +104,71 @@ const getDailyVariableData = (
 	}
 };
 
-export default function WeeklyForecast({
+interface WeeklyItemProps {
+	date: Date;
+	weatherCode: number;
+	value: string;
+	unit: string;
+	value2?: string;
+	unit2?: string;
+	windAngle?: number;
+	invertColors: boolean;
+}
+
+const WeeklyItem = React.memo(function WeeklyItem({
+	date,
+	weatherCode,
+	value,
+	unit,
+	value2,
+	unit2,
+	windAngle,
+	invertColors,
+}: WeeklyItemProps) {
+	const WeatherIconComponent = React.useMemo(
+		() => getWeatherIcon(weatherCode, 1),
+		[weatherCode]
+	);
+
+	return (
+		<View style={styles.hourlyItem}>
+			<WeatherIconComponent
+				width={32}
+				height={32}
+				fill={invertColors ? "black" : "white"}
+			/>
+			<StyledText style={{ fontSize: 20, paddingLeft: 8 }}>
+				{date.toLocaleDateString("en-US", {
+					weekday: "long",
+					timeZone: "UTC",
+				})}
+				{" - "}
+				{value2 ? `L:${value}${unit} H:${value2}${unit2}` : `${value}${unit}`}
+				{typeof windAngle === "number" && (
+					<View
+						style={[
+							{
+								flexDirection: "row",
+								alignItems: "center",
+							},
+							{
+								transform: [{ rotate: `${windAngle}deg` }],
+							},
+						]}
+					>
+						<IconDirectionUp
+							width={20}
+							height={20}
+							fill={invertColors ? "black" : "white"}
+						/>
+					</View>
+				)}
+			</StyledText>
+		</View>
+	);
+});
+
+const WeeklyForecast = React.memo(function WeeklyForecast({
 	weeklyData,
 	selectedWeatherVariable,
 }: WeeklyForecastProps) {
@@ -116,11 +180,6 @@ export default function WeeklyForecast({
 				Weekly Forecast
 			</StyledText>
 			{weeklyData?.time.map((_, index) => {
-				const WeatherIconComponent = getWeatherIcon(
-					weeklyData.weatherCode[index] as number,
-					1 // isDay is always true for daily summary
-				);
-
 				const { value, unit, value2, unit2, windAngle } =
 					getDailyVariableData(
 						weeklyData,
@@ -130,49 +189,24 @@ export default function WeeklyForecast({
 					);
 
 				return (
-					<View key={index} style={styles.hourlyItem}>
-						<WeatherIconComponent
-							width={32}
-							height={32}
-							fill={invertColors ? "black" : "white"}
-						/>
-						<StyledText style={{ fontSize: 20, paddingLeft: 8 }}>
-							{weeklyData.time[index].toLocaleDateString("en-US", {
-								weekday: "long",
-								timeZone: "UTC",
-							})}
-							{" - "}
-							{value2
-								? `L:${value}${unit} H:${value2}${unit2}`
-								: `${value}${unit}`}
-							{typeof windAngle === "number" && (
-								<View
-									style={[
-										{
-											flexDirection: "row",
-											alignItems: "center",
-										},
-										{
-											transform: [
-												{ rotate: `${windAngle}deg` },
-											],
-										},
-									]}
-								>
-									<IconDirectionUp
-										width={20}
-										height={20}
-										fill={invertColors ? "black" : "white"}
-									/>
-								</View>
-							)}
-						</StyledText>
-					</View>
+					<WeeklyItem
+						key={index}
+						date={weeklyData.time[index]}
+						weatherCode={weeklyData.weatherCode[index] as number}
+						value={value}
+						unit={unit}
+						value2={value2}
+						unit2={unit2}
+						windAngle={windAngle}
+						invertColors={invertColors}
+					/>
 				);
 			})}
 		</View>
 	);
-}
+});
+
+export default WeeklyForecast;
 
 const styles = StyleSheet.create({
 	hourlyItem: {

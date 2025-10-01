@@ -6,6 +6,7 @@ import React, {
 	ReactNode,
 	useCallback,
 	useRef,
+	useMemo,
 } from "react";
 import { PermissionsAndroid, AppState, AppStateStatus } from "react-native";
 import Geolocation from "react-native-geolocation-service";
@@ -141,16 +142,19 @@ export const CurrentLocationProvider = ({
 		};
 	}, [fetchLocationAndWeather]);
 
+	const value = useMemo(
+		() => ({
+			currentLocation,
+			weatherData,
+			errorMsg,
+			dataLoaded,
+			refetchWeather: fetchLocationAndWeather,
+		}),
+		[currentLocation, weatherData, errorMsg, dataLoaded, fetchLocationAndWeather]
+	);
+
 	return (
-		<CurrentLocationContext.Provider
-			value={{
-				currentLocation,
-				weatherData,
-				errorMsg,
-				dataLoaded,
-				refetchWeather: fetchLocationAndWeather,
-			}}
-		>
+		<CurrentLocationContext.Provider value={value}>
 			{children}
 		</CurrentLocationContext.Provider>
 	);

@@ -1,4 +1,4 @@
-import { createContext, useContext, ReactNode } from "react";
+import { createContext, useContext, ReactNode, useMemo } from "react";
 import * as Haptics from "expo-haptics";
 
 const HapticContext = createContext<{
@@ -14,8 +14,10 @@ export const HapticProvider = ({ children }: { children: ReactNode }) => {
 		Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 	};
 
+	const value = useMemo(() => ({ triggerHaptic }), []);
+
 	return (
-		<HapticContext.Provider value={{ triggerHaptic }}>
+		<HapticContext.Provider value={value}>
 			{children}
 		</HapticContext.Provider>
 	);

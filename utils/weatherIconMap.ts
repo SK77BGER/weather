@@ -30,88 +30,87 @@ import NightSnowThunderstorm from "@/assets/weather/wi-night-snow-thunderstorm.s
 
 export type WeatherIconType = React.FC<SvgProps>;
 
+const iconCache = new Map<string, WeatherIconType>();
+
 export function getWeatherIcon(
 	weatherCode: number,
 	isDay: number
 ): WeatherIconType {
+	const cacheKey = `${weatherCode}-${isDay}`;
+
+	if (iconCache.has(cacheKey)) {
+		return iconCache.get(cacheKey)!;
+	}
+
 	const day = isDay === 1;
+	let icon: WeatherIconType;
 
 	// 0: Clear sky
 	if (weatherCode === 0) {
-		return day ? DaySunny : NightClear;
+		icon = day ? DaySunny : NightClear;
 	}
-
 	// 1, 2, 3: Mainly clear, partly cloudy, and overcast
-	if (weatherCode >= 1 && weatherCode <= 3) {
+	else if (weatherCode >= 1 && weatherCode <= 3) {
 		if (weatherCode === 1) {
 			// Mainly clear
-			return day ? DaySunnyOvercast : NightPartlyCloudy;
-		}
-		if (weatherCode === 2) {
+			icon = day ? DaySunnyOvercast : NightPartlyCloudy;
+		} else if (weatherCode === 2) {
 			// Partly cloudy
-			return PartlyCloudy;
-		}
-		if (weatherCode === 3) {
+			icon = PartlyCloudy;
+		} else {
 			// Overcast
-			return Overcast;
+			icon = Overcast;
 		}
 	}
-
 	// 45, 48: Fog and depositing rime fog
-	if (weatherCode === 45 || weatherCode === 48) {
-		return day ? DayFog : NightFog;
+	else if (weatherCode === 45 || weatherCode === 48) {
+		icon = day ? DayFog : NightFog;
 	}
-
 	// 51, 53, 55: Drizzle: Light, moderate, and dense intensity
-	if (weatherCode >= 51 && weatherCode <= 55) {
-		return day ? DaySprinkle : NightSprinkle;
+	else if (weatherCode >= 51 && weatherCode <= 55) {
+		icon = day ? DaySprinkle : NightSprinkle;
 	}
-
 	// 56, 57: Freezing Drizzle: Light and dense intensity
-	if (weatherCode === 56 || weatherCode === 57) {
-		return day ? DaySleet : NightSleet;
+	else if (weatherCode === 56 || weatherCode === 57) {
+		icon = day ? DaySleet : NightSleet;
 	}
-
 	// 61, 63, 65: Rain: Slight, moderate and heavy intensity
-	if (weatherCode >= 61 && weatherCode <= 65) {
-		return day ? DayRain : NightRain;
+	else if (weatherCode >= 61 && weatherCode <= 65) {
+		icon = day ? DayRain : NightRain;
 	}
-
 	// 66, 67: Freezing Rain: Light and heavy intensity
-	if (weatherCode === 66 || weatherCode === 67) {
-		return day ? DayRainMix : NightRainMix;
+	else if (weatherCode === 66 || weatherCode === 67) {
+		icon = day ? DayRainMix : NightRainMix;
 	}
-
 	// 71, 73, 75: Snow fall: Slight, moderate, and heavy intensity
-	if (weatherCode >= 71 && weatherCode <= 75) {
-		return day ? DaySnow : NightSnow;
+	else if (weatherCode >= 71 && weatherCode <= 75) {
+		icon = day ? DaySnow : NightSnow;
 	}
-
 	// 77: Snow grains
-	if (weatherCode === 77) {
-		return day ? DaySnowWind : NightSnowWind;
+	else if (weatherCode === 77) {
+		icon = day ? DaySnowWind : NightSnowWind;
 	}
-
 	// 80, 81, 82: Rain showers: Slight, moderate, and violent
-	if (weatherCode >= 80 && weatherCode <= 82) {
-		return day ? DayShowers : NightShowers;
+	else if (weatherCode >= 80 && weatherCode <= 82) {
+		icon = day ? DayShowers : NightShowers;
 	}
-
 	// 85, 86: Snow showers slight and heavy
-	if (weatherCode === 85 || weatherCode === 86) {
-		return day ? DaySnow : NightSnow;
+	else if (weatherCode === 85 || weatherCode === 86) {
+		icon = day ? DaySnow : NightSnow;
 	}
-
 	// 95: Thunderstorm: Slight or moderate
-	if (weatherCode === 95) {
-		return day ? DayThunderstorm : NightThunderstorm;
+	else if (weatherCode === 95) {
+		icon = day ? DayThunderstorm : NightThunderstorm;
 	}
-
 	// 96, 99: Thunderstorm with slight and heavy hail
-	if (weatherCode === 96 || weatherCode === 99) {
-		return day ? DaySnowThunderstorm : NightSnowThunderstorm;
+	else if (weatherCode === 96 || weatherCode === 99) {
+		icon = day ? DaySnowThunderstorm : NightSnowThunderstorm;
+	}
+	// Fallback for unknown codes
+	else {
+		icon = DaySunny;
 	}
 
-	// Fallback for unknown codes
-	return DaySunny;
+	iconCache.set(cacheKey, icon);
+	return icon;
 }

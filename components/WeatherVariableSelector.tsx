@@ -1,3 +1,4 @@
+import React from "react";
 import {
 	Text as DefaultText,
 	ScrollView,
@@ -27,6 +28,49 @@ interface WeatherVariableSelectorProps {
 	onSelectionChange: (variable: string) => void;
 }
 
+interface VariablePillProps {
+	variable: string;
+	isSelected: boolean;
+	invertColors: boolean;
+	onPress: () => void;
+}
+
+const VariablePill = React.memo(function VariablePill({
+	variable,
+	isSelected,
+	invertColors,
+	onPress,
+}: VariablePillProps) {
+	return (
+		<HapticPressable onPress={onPress}>
+			<View
+				style={[
+					styles.pill,
+					{
+						borderColor: invertColors ? "black" : "white",
+						backgroundColor: invertColors ? "white" : "black",
+					},
+					isSelected && {
+						backgroundColor: invertColors ? "black" : "white",
+					},
+				]}
+			>
+				<DefaultText
+					style={[
+						styles.text,
+						{ color: invertColors ? "black" : "white" },
+						isSelected && {
+							color: invertColors ? "white" : "black",
+						},
+					]}
+				>
+					{variable}
+				</DefaultText>
+			</View>
+		</HapticPressable>
+	);
+});
+
 export default function WeatherVariableSelector({
 	onSelectionChange,
 }: WeatherVariableSelectorProps) {
@@ -48,39 +92,13 @@ export default function WeatherVariableSelector({
 			style={{ paddingTop: 32, paddingBottom: 1 }}
 		>
 			{weatherVariables.map((variable) => (
-				<HapticPressable
+				<VariablePill
 					key={variable}
+					variable={variable}
+					isSelected={selectedVariable === variable}
+					invertColors={invertColors}
 					onPress={() => handlePress(variable)}
-				>
-					<View
-						style={[
-							styles.pill,
-							{
-								borderColor: invertColors ? "black" : "white",
-								backgroundColor: invertColors
-									? "white"
-									: "black",
-							},
-							selectedVariable === variable && {
-								backgroundColor: invertColors
-									? "black"
-									: "white",
-							},
-						]}
-					>
-						<DefaultText
-							style={[
-								styles.text,
-								{ color: invertColors ? "black" : "white" },
-								selectedVariable === variable && {
-									color: invertColors ? "white" : "black",
-								},
-							]}
-						>
-							{variable}
-						</DefaultText>
-					</View>
-				</HapticPressable>
+				/>
 			))}
 		</ScrollView>
 	);
