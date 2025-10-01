@@ -137,10 +137,9 @@ export default function WeeklyForecast({
 							fill={invertColors ? "black" : "white"}
 						/>
 						<StyledText style={{ fontSize: 20, paddingLeft: 8 }}>
-							{new Date(
-								weeklyData.time[index]
-							).toLocaleDateString([], {
+							{weeklyData.time[index].toLocaleDateString("en-US", {
 								weekday: "long",
+								timeZone: "UTC",
 							})}
 							{" - "}
 							{value2
